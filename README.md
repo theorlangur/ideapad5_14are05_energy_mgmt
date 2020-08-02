@@ -18,7 +18,7 @@ acpi\_call packet and hence must be installed in order for script to work.
 
 In order to install the script into the system the following command must be executed with root priviledges:
 
-sudo make install
+	sudo make install
 
 It will do the following:
 
@@ -30,22 +30,26 @@ It will do the following:
 
 In order to uninstall the following command must be executed:
 
-> sudo make uninstall
+	sudo make uninstall
 
 ### Usage
 
 
-> sudo /usr/local/bin/ideapad5\_14are05\_energy\_mgmt.sh perf\_mode [..params..]|rapid\_charge [on|off]|batt\_conserv [on|off]<br>
-parameters for 'perf\_mode':<br>
+	sudo /usr/local/bin/ideapad5\_14are05\_energy\_mgmt.sh perf\_mode [..params..]|rapid\_charge [on|off]|batt\_conserv [on|off]
+
+parameters for 'perf\_mode':
+
 	intel - switch to intelligent cooling mode<br>
 	perf - switch to extreme performance mode<br>
 	save - switch to battery save mode<br>
 	<empty> - return current mode (one of the above)<br>
-parameters for 'rapid\_charge':<br>
+parameters for 'rapid\_charge':
+
 	on - switch rapid charge on
 	off - switch rapid charge off
 	<empty> - return current state of rapid charge
-parameters for 'batt\_conserv':<br>
+parameters for 'batt\_conserv':
+
 	on - switch battery conservation mode on (limits charge to 55-60%)<br>
 	off - switch battery conservation mode off<br>
 	<empty> - return current state of battery conservation mode<br>
