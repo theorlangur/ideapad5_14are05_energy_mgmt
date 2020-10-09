@@ -5,7 +5,7 @@
 # get "IdeaPad" models.
 model_name=$(shell sudo dmidecode | grep "Version: IdeaPad" | sed -n '1p' | cut -d' ' -f2,3,4)
 
-ifeq ("wildcard $(model_name)", "IdeaPad 5 14ARE05")
+ifeq ("$(model_name)", "IdeaPad 5 14ARE05")
 	noextname = ideapad5_14are05_energy_mgmt
 endif
 
