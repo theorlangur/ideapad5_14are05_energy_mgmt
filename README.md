@@ -1,6 +1,6 @@
-# Lenovo IdeaPad 5 14ARE05 energy management script
+# Lenovo IdeaPad 5 14ARE05/15ARE05 energy management scripts
 
-This is a bash script that utilizes acpi calls to control certain energy-related aspects of Lenovo Ideapad 5 14ARE05 laptops:
+This is a bash script that utilizes acpi calls to control certain energy-related aspects of Lenovo Ideapad 5 14ARE05/15ARE05 laptops:
 
   * rapid charge
   * battery conservation (limits the maximum charge of the battery at the level of 55-60% to prolong the life of the battery)
@@ -32,10 +32,15 @@ In order to uninstall the following command must be executed:
 
 	sudo make uninstall
 
-### Usage
+### Usage (14ARE05)
 
 
-	sudo /usr/local/bin/ideapad5_14are05_energy_mgmt.sh perf_mode [..params..]|rapid_charge [on|off]|batt_conserv [on|off]
+	sudo /usr/local/bin/ideapad5_14are05_energy_mgmt.sh status|perf_mode [..params..]|rapid_charge [on|off]|batt_conserv [on|off]
+
+### Usage (15ARE05)
+
+
+	sudo /usr/local/bin/ideapad5_15are05_energy_mgmt.sh status|perf_mode [..params..]|rapid_charge [on|off]|batt_conserv [on|off]
 
 parameters for 'perf\_mode':
 
