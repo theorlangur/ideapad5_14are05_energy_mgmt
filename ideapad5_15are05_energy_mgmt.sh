@@ -4,11 +4,16 @@ function get_bit()
 {
 	echo "\_SB.PCI0.LPC0.EC0.$1" > /proc/acpi/call
 	local bit=$(cat /proc/acpi/call | cut -d '' -f1)
-	if [ "$bit" == "0x1" ]; then
-		echo "1"
-	else
-		echo "0"
-	fi
+	case "$bit" in
+		"0x0" ) echo '0' 
+			;;
+		"0x1" ) echo '1' 
+			;;
+		"0x2" ) echo '2' 
+			;;
+		* ) echo 'how did we get here?'
+			exit 2
+	esac
 }
 
 function check_root()
@@ -62,22 +67,20 @@ perf_mode()
 				;;
 			save ) call_code='0x0013B001'
 				;;
-			* )	usage
-				exit 1
+			* ) echo 'how did we get here?'
+				exit 2
 		esac
 		echo "\_SB.PCI0.LPC0.EC0.VPC0.DYTC $call_code" > /proc/acpi/call
 	else
 		#obtain current perf mode
-		local stmd=$(get_bit STMD)
-		local qtmd=$(get_bit QTMD)
-		case "$stmd$qtmd" in
-			"00" ) echo 'perf' 
+		local spmo=$(get_bit SPMO)
+		local fcmo=$(get_bit FCMO)
+		case "$spmo$fcmo" in
+			"11" ) echo 'perf' 
 				;;
-			"01" ) echo 'save' 
+			"22" ) echo 'save' 
 				;;
-			"10" ) echo 'intel' 
-				;;
-			"11" ) echo 'unk' 
+			"00" ) echo 'intel' 
 				;;
 			* ) echo 'how did we get here?'
 				exit 2
@@ -101,8 +104,8 @@ rapid_charge()
 		echo "\_SB.PCI0.LPC0.EC0.VPC0.SBMC $call_code" > /proc/acpi/call
 	else
 		#obtain current rapid charge mode
-		local fcgm=$(get_bit FCGM)
-		case "$fcgm" in
+		local qcho=$(get_bit QCHO)
+		case "$qcho" in
 			"0" ) echo 'off' 
 				;;
 			"1" ) echo 'on' 
@@ -129,8 +132,8 @@ battery_conservation()
 		echo "\_SB.PCI0.LPC0.EC0.VPC0.SBMC $call_code" > /proc/acpi/call
 	else
 		#obtain current battery conservation mode
-		local btsg=$(get_bit BTSG)
-		case "$btsg" in
+		local btsm=$(get_bit BTSM)
+		case "$btsm" in
 			"0" ) echo 'off' 
 				;;
 			"1" ) echo 'on' 
@@ -152,9 +155,12 @@ status() {
 check_root
 check_acpi_call
 
-model_name=$(dmidecode | grep Version | sed -n '2p' | cut -d' ' -f2,3,4)
-if [ "$model_name" != "IdeaPad 5 14ARE05" ]; then
-	echo "Warning! This script was developed to run only on IdeaPad 5 14ARE05"
+# dmidecode produces lots of "Version" lines. `sed -n 'Xp'` (where X is a particular
+# number does not guarantee you will get the machine model. This grep is a hacky-fix to
+# get "IdeaPad" models.
+model_name=$(sudo dmidecode | grep "Version: IdeaPad" | sed -n '1p' | cut -d' ' -f2,3,4)
+if [ "$model_name" != "IdeaPad 5 15ARE05" ]; then
+	echo "Warning! This script was developed to run only on IdeaPad 5 15ARE05"
 	echo "This machine:$model_name"
 fi
 
@@ -164,6 +170,8 @@ case "$1" in
 	"batt_conserv" ) battery_conservation $2
 		;;
 	"perf_mode" ) perf_mode $2
+		;;
+	"status" ) status
 		;;
 	* )	usage
 		exit 1

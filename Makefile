@@ -1,6 +1,24 @@
 .PHONY: install uninstall checkroot checkscript checksudo checkacpi
 
-noextname = ideapad5_14are05_energy_mgmt
+# dmidecode produces lots of "Version" lines. `sed -n 'Xp'` (where X is a particular
+# number does not guarantee you will get the machine model. This grep is a hacky-fix to
+# get "IdeaPad" models.
+model_name=$(shell sudo dmidecode | grep "Version: IdeaPad" | sed -n '1p' | cut -d' ' -f2,3,4)
+
+ifeq ("$(model_name)", "IdeaPad 5 14ARE05")
+	noextname = ideapad5_14are05_energy_mgmt
+endif
+
+ifeq ("$(model_name)", "IdeaPad 5 15ARE05")
+	noextname = ideapad5_15are05_energy_mgmt
+endif
+
+ifeq ("$(noextname)", "")
+	@echo "Model name is invalid."
+	@echo "This machine:$(model_name)"
+	exit 1
+endif
+
 script = $(noextname).sh
 install_path = /usr/local/bin/
 sudorule = $(noextname)
